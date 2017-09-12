@@ -1,0 +1,30 @@
+function remove-local-registry {
+    $containerInfo = docker ps -a | Select-String registry
+
+    if(-Not [string]::IsNullOrEmpty($containerInfo)) {
+        Write-Host "Removing local registry.";
+        $line = $containerInfo -split '\s+'
+        $containerId = $line[0]
+        docker stop $containerId; 
+        docker rm $containerId;
+    }
+    else {
+        Write-Host "Local registry not found."
+    }
+}
+
+function add-local-registry {
+    if(get-registry-status) {
+        remove-local-registry
+    }
+    Write-Host "Creating a new local registry";
+    docker run -d -p 1500:5000 --name localregistry registry ;
+}
+
+function get-registry-status {
+    $registryIsRunning = docker ps -a | Select-String registry
+    if($registryIsRunning)
+    {
+        return $true;
+    }
+}
