@@ -1,3 +1,26 @@
+. .\registry.ps1
+
+function push-local-image
+{
+    Param(
+        [ValidateSet("rabbitmq")][string]$imageName
+    )
+
+    add-local-registry
+    
+    $registryName = "nexus.spokvdev.com"
+    $tag = "master"
+    $localRegistryName = "localhost`:1500"
+    $fullImageName = "ccp-$imageName"
+    $serviceName = "ccp_$imageName"
+    $nexusImageName = "$registryName/$fullImageName`:$tag"
+    $localImageName = "$localRegistryName/local-$imageName"
+
+    docker tag  $nexusImageName $localImageName
+    docker push $localImageName
+    docker service update --image $localImageName $serviceName
+}
+
 
 function remove-image-by-tag([string]$tag) {
     $containers = docker image ls | Select-String $tag
