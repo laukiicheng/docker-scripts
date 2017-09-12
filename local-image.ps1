@@ -24,7 +24,7 @@ if(-Not $registryName )
 }
 if(-Not $tag )
 {
-    $tag = "develop"
+    $tag = "master"
 }
 
 $localRegistryName = "localhost`:1500"
