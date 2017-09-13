@@ -1,4 +1,4 @@
-function remove-local-stack([string]$stackName) {
+function remove-stack([string]$stackName) {
     docker stack rm $stackName
 }
 

@@ -15,10 +15,13 @@ function remove-local-registry {
 
 function add-local-registry {
     if(get-registry-status) {
-        remove-local-registry
+        # remove-local-registry
+        Write-Host "Local registry is already running."
     }
-    Write-Host "Creating a new local registry";
-    docker run -d -p 1500:5000 --name localregistry registry ;
+    else {
+        Write-Host "Creating a new local registry";
+        docker run -d -p 1500:5000 --name localregistry registry ;
+    }
 }
 
 function get-registry-status {
