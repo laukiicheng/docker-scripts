@@ -50,28 +50,32 @@ function tag-as-local-image {
 
 
 function remove-image-by-tag([string]$tag) {
-    $containers = docker image ls | Select-String $tag
+    $containers = docker image ls
 
     $containers |
     ForEach-Object {
         $line = $_ 
         $data = $line -split '\s+'
-        Write-Host $data[2]
-        $containerId = $data[2]
-        docker image rm $containerId
+        $matchesTag = $data[1] | Select-String $tag
+        if($matchesTag) {
+            $containerId = $data[2]
+            docker image rm -f $containerId
+        }
     }
 }
 
 function remove-image-by-name([string]$name) {
-    $containers = docker image ls | Select-String $name
-
-    $containers |
-    ForEach-Object {
-        $line = $_ 
-        $data = $line -split '\s+'
-        Write-Host $data[2]
-        $containerId = $data[2]
-        docker image rm -f $containerId
-    }
+    $containers = docker image ls
+    
+        $containers |
+        ForEach-Object {
+            $line = $_ 
+            $data = $line -split '\s+'
+            $matchesName = $data[0] | Select-String $name
+            if($matchesName) {
+                $containerId = $data[2]
+                docker image rm -f $containerId
+            }
+        }
 }
 
