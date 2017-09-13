@@ -2,6 +2,7 @@
 
 $registryName = "nexus.spokvdev.com"
 $tag = "master"
+$localRegistryName = "localhost`:1500"
 
 function get-base-image-name([string]$fullImageName) {
     $hasprefix = $fullImageName | Select-String "ccp"
@@ -22,7 +23,6 @@ function update-service-to-local-image {
     )
 
     add-local-registry
-    $localRegistryName = "localhost`:1500"
     $baseImageName = get-base-image-name $imageName
     $serviceName = "ccp_$baseImageName"
     $nexusImageName = "$registryName/$imageName`:$tag"
@@ -35,13 +35,15 @@ function update-service-to-local-image {
 
 function tag-as-local-image {
     Param(
-        [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")][string]$imageName
+        [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
+        [Parameter(Position=0,mandatory=$true)]
+        [string]$imageName
     )
     
-    $localRegistryName = "localhost`:1500"
     $nexusImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
 
+    docker image rm $localImageName
     docker tag  $nexusImageName $localImageName
     docker image ls | Select-String $localImageName
 }
@@ -51,7 +53,7 @@ function remove-image-by-tag([string]$tag) {
     $containers = docker image ls | Select-String $tag
 
     $containers |
-    ForEach-Object{
+    ForEach-Object {
         $line = $_ 
         $data = $line -split '\s+'
         Write-Host $data[2]
@@ -64,12 +66,12 @@ function remove-image-by-name([string]$name) {
     $containers = docker image ls | Select-String $name
 
     $containers |
-    ForEach-Object{
+    ForEach-Object {
         $line = $_ 
         $data = $line -split '\s+'
         Write-Host $data[2]
         $containerId = $data[2]
-        docker image rm $containerId
+        docker image rm -f $containerId
     }
 }
 

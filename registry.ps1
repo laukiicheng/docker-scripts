@@ -26,8 +26,7 @@ function add-local-registry {
 
 function get-registry-status {
     $registryIsRunning = docker ps -a | Select-String registry
-    if($registryIsRunning)
-    {
+    if($registryIsRunning) {
         return $true;
     }
 }
