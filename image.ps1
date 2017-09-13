@@ -1,24 +1,49 @@
 . .\registry.ps1
 
-function push-local-image
-{
+$registryName = "nexus.spokvdev.com"
+$tag = "master"
+
+function get-base-image-name([string]$fullImageName) {
+    $hasprefix = $fullImageName | Select-String "ccp"
+    if($hasprefix) {
+        $firstDash = $fullImageName.IndexOf("-")
+        return $fullImageName.SubString($firstDash + 1)
+    }
+    else {
+        return $fullImageName
+    } 
+}
+
+function update-service-to-local-image {
     Param(
-        [ValidateSet("rabbitmq")][string]$imageName
+        [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
+        [Parameter(Position=0,mandatory=$true)]
+        [string]$imageName
     )
 
     add-local-registry
-    
-    $registryName = "nexus.spokvdev.com"
-    $tag = "master"
     $localRegistryName = "localhost`:1500"
-    $fullImageName = "ccp-$imageName"
-    $serviceName = "ccp_$imageName"
-    $nexusImageName = "$registryName/$fullImageName`:$tag"
+    $baseImageName = get-base-image-name $imageName
+    $serviceName = "ccp_$baseImageName"
+    $nexusImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
 
     docker tag  $nexusImageName $localImageName
     docker push $localImageName
     docker service update --image $localImageName $serviceName
+}
+
+function tag-as-local-image {
+    Param(
+        [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")][string]$imageName
+    )
+    
+    $localRegistryName = "localhost`:1500"
+    $nexusImageName = "$registryName/$imageName`:$tag"
+    $localImageName = "$localRegistryName/local-$imageName"
+
+    docker tag  $nexusImageName $localImageName
+    docker image ls | Select-String $localImageName
 }
 
 
