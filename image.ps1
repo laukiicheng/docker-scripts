@@ -3,7 +3,7 @@
 parse-variables
 
 # Get the base image name if prefixed with ccp
-function get-base-image-name([string]$fullImageName) {
+function image-get-base-name([string]$fullImageName) {
     $hasprefix = $fullImageName | Select-String "ccp"
     if($hasprefix) {
         $firstDash = $fullImageName.IndexOf("-")
@@ -15,15 +15,15 @@ function get-base-image-name([string]$fullImageName) {
 }
 
 # Update the service in the stack to an image pushed to a local regsitry
-function update-service-to-local-image {
+function image-update-service-to-local {
     Param(
         [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$imageName
     )
 
-    add-local-registry
-    $baseImageName = get-base-image-name $imageName
+    registry-add-local
+    $baseImageName = image-get-base-name $imageName
     $serviceName = "ccp_$baseImageName"
     $repoImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
@@ -34,7 +34,7 @@ function update-service-to-local-image {
 }
 
 # Tag an image for pushing to a local repository
-function tag-as-local-image {
+function image-tag-local {
     Param(
         [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
         [Parameter(Position=0,mandatory=$true)]
@@ -51,7 +51,7 @@ function tag-as-local-image {
 
 # Remove image(s) by the tag name
 # This goes a general pattern match
-function remove-image-by-tag([string]$tag) {
+function image-remove-by-tag([string]$tag) {
     docker image ls |
     ForEach-Object {
         $line = $_ 
@@ -66,7 +66,7 @@ function remove-image-by-tag([string]$tag) {
 
 # Remove image(s) by the image name
 # This goes a general pattern match
-function remove-image-by-name([string]$name) {
+function image-remove-by-name([string]$name) {
     
     docker image ls |
     ForEach-Object {
@@ -79,4 +79,3 @@ function remove-image-by-name([string]$name) {
         }
     }
 }
-
