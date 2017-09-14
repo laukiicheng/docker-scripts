@@ -1,6 +1,5 @@
 . .\registry.ps1
-. .\env-parse.ps1
-parse-variables
+. .\env-vars.ps1
 
 # Get the base image name if prefixed with ccp
 function image-get-base-name([string]$fullImageName) {
@@ -40,7 +39,7 @@ function image-tag-local {
         [Parameter(Position=0,mandatory=$true)]
         [string]$imageName
     )
-    
+
     $repoImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
 
