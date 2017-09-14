@@ -16,7 +16,7 @@ function image-get-base-name([string]$fullImageName) {
 # Update the service in the stack to an image pushed to a local regsitry
 function image-update-service-to-local {
     Param(
-        [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
+        [ValidateSet("ccp-logstash", "ccp-rabbitmq", "ejabberdactivityprocessor")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$imageName
     )
@@ -35,7 +35,7 @@ function image-update-service-to-local {
 # Tag an image for pushing to a local repository
 function image-tag-local {
     Param(
-        [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
+        [ValidateSet("ccp-logstash", "ccp-rabbitmq", "ejabberdactivityprocessor")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$imageName
     )
@@ -72,7 +72,8 @@ function image-remove-by-name([string]$name) {
         $line = $_ 
         $data = $line -split '\s+'
         $matchesName = $data[0] | Select-String $name
-        if($matchesName) {
+        $isBaseImage = $data[1] -match '\d'
+        if($matchesName -And -Not $isBaseImage) {
             $containerId = $data[2]
             docker image rm -f $containerId
         }
