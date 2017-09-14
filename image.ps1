@@ -1,8 +1,6 @@
 . .\registry.ps1
-
-$registryName = "nexus.spokvdev.com"
-$tag = "master"
-$localRegistryName = "localhost`:1500"
+. .\env-parse.ps1
+parse-variables
 
 # Get the base image name if prefixed with ccp
 function get-base-image-name([string]$fullImageName) {
@@ -27,10 +25,10 @@ function update-service-to-local-image {
     add-local-registry
     $baseImageName = get-base-image-name $imageName
     $serviceName = "ccp_$baseImageName"
-    $nexusImageName = "$registryName/$imageName`:$tag"
+    $repoImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
 
-    docker tag  $nexusImageName $localImageName
+    docker tag  $repoImageName $localImageName
     docker push $localImageName
     docker service update --image $localImageName $serviceName
 }
@@ -43,11 +41,11 @@ function tag-as-local-image {
         [string]$imageName
     )
     
-    $nexusImageName = "$registryName/$imageName`:$tag"
+    $repoImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
 
     docker image rm $localImageName
-    docker tag  $nexusImageName $localImageName
+    docker tag  $repoImageName $localImageName
     docker image ls | Select-String $localImageName
 }
 
