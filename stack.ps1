@@ -4,16 +4,21 @@ function remove-stack([string]$stackName) {
 }
 
 # Stop all running containers. Prune the Docker system and volumes
-function docker-clear {
+function docker-clean {
     docker stop $(docker ps -aq);
     docker system prune -f; 
     docker volume prune -f;
 }
 
 # Check the health of all services
-function service-health-check {
+function stack-health-check {
+    Param(
+        [Parameter(Position=0,mandatory=$true)]
+        [string]$stackName
+    )
+
     while($true) {
-        $containersDown = docker service ls | Select-String 0/1
+        $containersDown = docker stack services $stackName | Select-String 0/1
         if (-Not $containersDown) {
             Write-Host "STACK IS HEALTHY"
             return;
