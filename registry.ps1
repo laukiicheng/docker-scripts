@@ -1,3 +1,4 @@
+# Remove local Docker registry
 function remove-local-registry {
     $containerInfo = docker ps -a | Select-String registry
 
@@ -13,6 +14,7 @@ function remove-local-registry {
     }
 }
 
+# Add local Docker registry
 function add-local-registry {
     if(get-registry-status) {
         # remove-local-registry
@@ -24,6 +26,7 @@ function add-local-registry {
     }
 }
 
+# Get local Docker registry status
 function get-registry-status {
     $registryIsRunning = docker ps -a | Select-String registry
     if($registryIsRunning) {

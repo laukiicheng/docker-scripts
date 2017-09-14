@@ -4,6 +4,7 @@ $registryName = "nexus.spokvdev.com"
 $tag = "master"
 $localRegistryName = "localhost`:1500"
 
+# Get the base image name if prefixed with ccp
 function get-base-image-name([string]$fullImageName) {
     $hasprefix = $fullImageName | Select-String "ccp"
     if($hasprefix) {
@@ -15,6 +16,7 @@ function get-base-image-name([string]$fullImageName) {
     } 
 }
 
+# Update the service in the stack to an image pushed to a local regsitry
 function update-service-to-local-image {
     Param(
         [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
@@ -33,6 +35,7 @@ function update-service-to-local-image {
     docker service update --image $localImageName $serviceName
 }
 
+# Tag an image for pushing to a local repository
 function tag-as-local-image {
     Param(
         [ValidateSet("ccp-rabbitmq", "ejabberdactivityprocessor")]
@@ -48,7 +51,8 @@ function tag-as-local-image {
     docker image ls | Select-String $localImageName
 }
 
-
+# Remove image(s) by the tag name
+# This goes a general pattern match
 function remove-image-by-tag([string]$tag) {
     $containers = docker image ls
 
@@ -64,6 +68,8 @@ function remove-image-by-tag([string]$tag) {
     }
 }
 
+# Remove image(s) by the image name
+# This goes a general pattern match
 function remove-image-by-name([string]$name) {
     $containers = docker image ls
     
