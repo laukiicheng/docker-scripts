@@ -1,6 +1,22 @@
 # Remove stack by name
-function remove-stack([string]$stackName) {
+function stack-remove {
+    Param(
+        [Parameter(Position=0,mandatory=$true)]
+        [string]$stackName
+    )
+
     docker stack rm $stackName
+}
+
+# Remove all stacks
+function stack-remove-all {
+
+    docker stack ls |
+    ForEach-Object {
+        $line = $_ 
+        $data = $line -split '\s+'
+        docker stack rm $data[0]
+    }
 }
 
 # Stop all running containers. Prune the Docker system and volumes

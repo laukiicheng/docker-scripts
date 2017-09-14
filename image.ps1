@@ -52,9 +52,7 @@ function tag-as-local-image {
 # Remove image(s) by the tag name
 # This goes a general pattern match
 function remove-image-by-tag([string]$tag) {
-    $containers = docker image ls
-
-    $containers |
+    docker image ls |
     ForEach-Object {
         $line = $_ 
         $data = $line -split '\s+'
@@ -69,17 +67,16 @@ function remove-image-by-tag([string]$tag) {
 # Remove image(s) by the image name
 # This goes a general pattern match
 function remove-image-by-name([string]$name) {
-    $containers = docker image ls
     
-        $containers |
-        ForEach-Object {
-            $line = $_ 
-            $data = $line -split '\s+'
-            $matchesName = $data[0] | Select-String $name
-            if($matchesName) {
-                $containerId = $data[2]
-                docker image rm -f $containerId
-            }
+    docker image ls |
+    ForEach-Object {
+        $line = $_ 
+        $data = $line -split '\s+'
+        $matchesName = $data[0] | Select-String $name
+        if($matchesName) {
+            $containerId = $data[2]
+            docker image rm -f $containerId
         }
+    }
 }
 
