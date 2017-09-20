@@ -29,6 +29,7 @@ function docker-clean {
 # Check the health of all services
 function stack-health-check {
     Param(
+    [ValidateSet("ccp", "identityintegration-test")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$stackName
     )
