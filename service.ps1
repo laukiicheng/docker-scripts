@@ -43,7 +43,7 @@ function service-scale-to {
 
 function service-info {
     Param(
-        [ValidateSet("ccp_identityserver", "ccp_kibana")]
+        [ValidateSet("ccp_identityserver", "ccp_kibana", "ccp_logstash")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$serviceName
     )
