@@ -1,6 +1,7 @@
 # Remove stack by name
 function stack-remove {
     Param(
+        [ValidateSet("ccp", "identityintegration-test")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$stackName
     )
@@ -21,7 +22,7 @@ function stack-remove-all {
 
 # Stop all running containers. Prune the Docker system and volumes
 function docker-clean {
-    docker stop $(docker ps -aq);
+    # docker stop $(docker ps -aq);
     docker system prune -f; 
     docker volume prune -f;
 }
@@ -29,7 +30,7 @@ function docker-clean {
 # Check the health of all services
 function stack-health-check {
     Param(
-    [ValidateSet("ccp", "identityintegration-test")]
+        [ValidateSet("ccp", "identityintegration-test")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$stackName
     )

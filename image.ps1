@@ -1,12 +1,31 @@
 . .\registry.ps1
 . .\env-vars.ps1
 
+function name-container-to-service {
+    Param(
+        [ValidateSet("ccp-identityserver", "ccp-kibana")]
+        [Parameter(Position=0,mandatory=$true)]
+        [string]$serviceName
+    )
+
+    $serviceSplit = $serviceName -split '-'
+    return "$($serviceSplit[0])_$($serviceSplit[1])"
+}
+
 # Get the base image name if prefixed with ccp
 function image-get-base-name([string]$fullImageName) {
     $hasprefix = $fullImageName | Select-String "ccp"
     if($hasprefix) {
         $firstDash = $fullImageName.IndexOf("-")
-        return $fullImageName.SubString($firstDash + 1)
+        if($firstDash -ne -1) {
+            return $fullImageName.SubString($firstDash + 1)
+        }
+
+        $firstUnderscore = $fullImageName.IndexOf("_")
+        if($firstUnderscore -ne -1) {
+            return $fullImageName.SubString($firstUnderscore + 1)
+        }
+        
     }
     else {
         return $fullImageName
