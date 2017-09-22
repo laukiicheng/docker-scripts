@@ -35,13 +35,31 @@ function stack-health-check {
         [string]$stackName
     )
 
-    while($true) {
-        $containersDown = docker stack services $stackName | Select-String 0/1
-        if (-Not $containersDown) {
+    $stackHealthy = $false;
+    while(-Not $stackHealthy) {
+        Write-Host "STACK HEALTH CHECK -------------------------------------------------------"
+        $isHealthy = $true
+        docker stack services $stackName |
+        ForEach-Object {
+            $line = $_ 
+            $data = $line -split '\s+'
+            $replicas = $data[3]
+            $replicated = $replicas -split '/'
+
+            if($replicated[0] -ne $replicated[1]) {
+                $isHealthy = $false
+                Write-Host "$($data[1]) $($data[3])" 
+            }
+        }
+
+        $stackHealthy = $isHealthy
+        if (-Not $stackHealthy) {
+            Write-Host "unhealthy. wait 5 seconds ..."
+            Start-Sleep -s 5
+        }
+        else {
             Write-Host "STACK IS HEALTHY"
             return;
         }
-        Write-Host "unhealthy. wait 5 seconds ..."
-        Start-Sleep -s 5
     }
 }
