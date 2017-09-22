@@ -60,6 +60,7 @@ function stack-health-check {
         }
         else {
             Write-Host "STACK IS HEALTHY"
+            docker service ls
             return;
         }
     }
