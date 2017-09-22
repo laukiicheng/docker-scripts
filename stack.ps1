@@ -35,6 +35,7 @@ function stack-health-check {
         [string]$stackName
     )
 
+    $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
     $stackHealthy = $false;
     while(-Not $stackHealthy) {
         Write-Host "STACK HEALTH CHECK -------------------------------------------------------"
@@ -54,7 +55,7 @@ function stack-health-check {
 
         $stackHealthy = $isHealthy
         if (-Not $stackHealthy) {
-            Write-Host "unhealthy. wait 5 seconds ..."
+            Write-Host "unhealthy. wait 5 seconds ... Elapsed Time: $($elapsed.Elapsed.ToString("mm\:ss"))"
             Start-Sleep -s 5
         }
         else {
@@ -62,4 +63,5 @@ function stack-health-check {
             return;
         }
     }
+    $elapsed.Stop()
 }
