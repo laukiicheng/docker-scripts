@@ -46,7 +46,7 @@ function stack-health-check {
             $replicas = $data[3]
             $replicated = $replicas -split '/'
 
-            if($replicated[0] -ne $replicated[1]) {
+            if($replicated[0] -ne $replicated[1] -and $data[3] -match '\d') {
                 $isHealthy = $false
                 Write-Host "$($data[1]) $($data[3])" 
             }
