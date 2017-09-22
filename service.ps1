@@ -14,10 +14,11 @@ function service-rm-container {
             $line = $_ 
             $data = $line -split '\s+'
             $containerId = $data[0]
-            Write-Host "Stoping container $($containerId)"
-            # docker container stop $containerId
-            # docker rm $containerId
-            # return;
+            $container = $data[1] -split '/'
+            Write-Host "Stoping container $($container[1]) $($containerId)"
+            docker container stop $containerId
+            docker rm $containerId
+            break
         }
     }
     else {

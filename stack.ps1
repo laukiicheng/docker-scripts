@@ -22,7 +22,7 @@ function stack-remove-all {
 
 # Stop all running containers. Prune the Docker system and volumes
 function docker-clean {
-    # docker stop $(docker ps -aq);
+    docker stop $(docker ps -aq);
     docker system prune -f; 
     docker volume prune -f;
 }
