@@ -69,7 +69,7 @@ function image-tag-local {
 
 # Remove image(s) by the tag name
 # This goes a general pattern match
-function image-remove-by-tag([string]$tag) {
+function image-rm-by-tag([string]$tag) {
     docker image ls |
     ForEach-Object {
         $line = $_ 
@@ -84,7 +84,7 @@ function image-remove-by-tag([string]$tag) {
 
 # Remove image(s) by the image name
 # This goes a general pattern match
-function image-remove-by-name([string]$name) {
+function image-rm-by-name([string]$name) {
     
     docker image ls |
     ForEach-Object {

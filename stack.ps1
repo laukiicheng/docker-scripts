@@ -10,7 +10,7 @@ function stack-remove {
 }
 
 # Remove all stacks
-function stack-remove-all {
+function stack-rm-all {
 
     docker stack ls |
     ForEach-Object {
