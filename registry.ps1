@@ -1,7 +1,7 @@
 . .\env-vars.ps1
 
 # Remove local Docker registry
-function registry-rm-local {
+function reg-rm-local {
     $containerInfo = docker ps -a | Select-String registry
 
     if(-Not [string]::IsNullOrEmpty($containerInfo)) {
@@ -17,8 +17,8 @@ function registry-rm-local {
 }
 
 # Add local Docker registry
-function registry-add-local {
-    if(get-registry-status) {
+function reg-add-local {
+    if(reg-get-status) {
         Write-Host "Local registry is already running."
     }
     else {
@@ -28,7 +28,7 @@ function registry-add-local {
 }
 
 # Get local Docker registry status
-function registry-get-status {
+function reg-get-status {
     $registryIsRunning = docker ps -a | Select-String registry
     if($registryIsRunning) {
         return $true;
