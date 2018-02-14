@@ -6,6 +6,7 @@
 . ./hello.ps1
 . ./image.ps1
 . ./logs.ps1
+. ./messaging.ps1
 . ./registry.ps1
 . ./service.ps1
 . ./stack.ps1
