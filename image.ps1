@@ -13,7 +13,7 @@ function name-container-to-service {
 }
 
 # Get the base image name if prefixed with ccp
-function image-get-base-name([string]$fullImageName) {
+function im-get-base-name([string]$fullImageName) {
     $hasprefix = $fullImageName | Select-String "ccp"
     if($hasprefix) {
         $firstDash = $fullImageName.IndexOf("-")
@@ -33,7 +33,7 @@ function image-get-base-name([string]$fullImageName) {
 }
 
 # Update the service in the stack to an image pushed to a local regsitry
-function image-update-service-to-local {
+function im-update-service-to-local {
     Param(
         [ValidateSet("ccp-logstash", "ccp-rabbitmq", "ejabberdactivityprocessor")]
         [Parameter(Position=0,mandatory=$true)]
@@ -41,7 +41,7 @@ function image-update-service-to-local {
     )
 
     registry-add-local
-    $baseImageName = image-get-base-name $imageName
+    $baseImageName = im-get-base-name $imageName
     $serviceName = "ccp_$baseImageName"
     $repoImageName = "$registryName/$imageName`:$tag"
     $localImageName = "$localRegistryName/local-$imageName"
@@ -52,7 +52,7 @@ function image-update-service-to-local {
 }
 
 # Tag an image for pushing to a local repository
-function image-tag-local {
+function im-tag-local {
     Param(
         [ValidateSet("ccp-logstash", "ccp-rabbitmq", "ejabberdactivityprocessor")]
         [Parameter(Position=0,mandatory=$true)]
@@ -69,7 +69,7 @@ function image-tag-local {
 
 # Remove image(s) by the tag name
 # This goes a general pattern match
-function image-rm-by-tag([string]$tag) {
+function im-rm-by-tag([string]$tag) {
     docker image ls |
     ForEach-Object {
         $line = $_ 
@@ -84,15 +84,16 @@ function image-rm-by-tag([string]$tag) {
 
 # Remove image(s) by the image name
 # This goes a general pattern match
-function image-rm-by-name([string]$name) {
-    
+function im-rm-by-name([string]$name) {
+
     docker image ls |
     ForEach-Object {
         $line = $_ 
         $data = $line -split '\s+'
         $matchesName = $data[0] | Select-String $name
         $isBaseImage = $data[1] -match '\d'
-        if($matchesName -And -Not $isBaseImage) {
+        # if($matchesName -And -Not $isBaseImage) {
+        if($matchesName) {
             $containerId = $data[2]
             docker image rm -f $containerId
         }

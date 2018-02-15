@@ -1,7 +1,7 @@
 # Remove stack by name
-function stack-remove {
+function st-rm {
     Param(
-        [ValidateSet("ccp", "identityintegration-test")]
+        [ValidateSet("ccp", "log")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$stackName
     )
@@ -10,7 +10,7 @@ function stack-remove {
 }
 
 # Remove all stacks
-function stack-rm-all {
+function st-rm-all {
 
     docker stack ls |
     ForEach-Object {
@@ -21,16 +21,16 @@ function stack-rm-all {
 }
 
 # Stop all running containers. Prune the Docker system and volumes
-function docker-clean {
+function dc-clean {
     docker stop $(docker ps -aq);
     docker system prune -f; 
     docker volume prune -f;
 }
 
 # Check the health of all services
-function stack-health-check {
+function st-health-check {
     Param(
-        [ValidateSet("ccp", "identityintegration-test", "logagg")]
+        [ValidateSet("ccp", "identitytest", "logagg")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$stackName
     )

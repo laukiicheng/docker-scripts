@@ -1,12 +1,12 @@
 # Shut down 1 container for a service
-function service-rm-container {
+function sr-rm-container {
     Param(
         [ValidateSet("ccp_identityserver", "ccp_kibana", "ccp_logstash")]
         [Parameter(Position=0,mandatory=$true)]
         [string]$serviceName
     )
 
-    $containerName = name-service-to-container $serviceName
+    $containerName = name-sr-to-container $serviceName
     $containers = docker container ps | Select-String $containerName
     if($containers) {
         $containers |
@@ -27,7 +27,7 @@ function service-rm-container {
 }
 
 # Scale service down and back up
-function service-scale-to {
+function sr-scale-to {
     Param(
         [ValidateSet("ccp_identityserver", "ccp_kibana", "ccp_logstash")]
         [Parameter(Position=0,mandatory=$true)]
@@ -42,7 +42,7 @@ function service-scale-to {
 }
 
 
-function service-info {
+function sr-info {
     Param(
         [ValidateSet("ccp_identityserver", "ccp_kibana", "ccp_logstash")]
         [Parameter(Position=0,mandatory=$true)]
@@ -54,7 +54,7 @@ function service-info {
     Write-Host "SERVICE INFO ---------------------------------------------------------------------"
     docker service ps $serviceName
     Write-Host "CONTAINERS-------------------------------------------------------------------------"
-    $containerName = name-service-to-container $serviceName
+    $containerName = name-sr-to-container $serviceName
     $containers = docker container ps | Select-String $containerName
     if($containers ) {
         Write-Host $containers
@@ -64,7 +64,7 @@ function service-info {
     }
 }
 
-function name-service-to-container {
+function name-sr-to-container {
     Param(
         [ValidateSet("ccp_identityserver", "ccp_kibana", "ccp_logstash")]
         [Parameter(Position=0,mandatory=$true)]
