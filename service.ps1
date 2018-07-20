@@ -1,4 +1,6 @@
 # Shut down 1 container for a service
+
+
 function sr-rm-container {
     Param(
         [ValidateSet("ccp_identityserver", "ccp_kibana", "ccp_logstash")]
